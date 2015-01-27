@@ -6,9 +6,12 @@ var GitStats = require("git-stats")
   , Repo = require("gry")
   , Fs = require("fs")
   , Logger = require("bug-killer")
+  , Async = require("async")
   ;
 
+// Configure logger
 Logger.config.displayDate = false;
+Logger.config.logLevel = 4;
 
 // Check if it's a git repo
 if (!Fs.existsSync(".git/")) {
@@ -18,7 +21,6 @@ if (!Fs.existsSync(".git/")) {
 // Get commits
 var myRepo = new Repo(".");
 myRepo.exec("config user.email", function (err, GIT_EMAIL) {
-    debugger
     if (err) { return Logger.log(err, "error"); }
     myRepo.exec("config --get remote.origin.url", function (err, REMOTE_URL) {
         if (!REMOTE_URL) {
@@ -27,7 +29,26 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
 
         myRepo.exec("log --author='" + GIT_EMAIL + "'", function (err, log) {
             if (err) { return Logger.log(err, "error"); }
-            console.log(log);
+            var series = [];
+            (log = log.split("\n")).forEach(function (c, i) {
+                if (!/^commit\ /.test(c)) { return; }
+                var commitHash = c.match(/^commit (.*)/)[1].trim()
+                  , date = log[i + 2].match(/^Date: (.*)/)[1].trim()
+                  ;
+
+                series.push(function (callback) {
+                    GitStats.record({
+                        date: date
+                      , url: REMOTE_URL
+                      , hash: commitHash
+                    }, callback);
+                });
+            });
+
+            Async.series(series, function (err) {
+                if (err) { return Logger.log(err, "error"); }
+                Logger.log("Imported " + series.length + " commits.", "info");
+            });
         });
     });
 });
