@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+// Dependencies
+var GitStats = require("git-stats")
+  , ExecSync = require("exec-sync")
+  , Repo = require("gry")
+  , Fs = require("fs")
+  , Logger = require("bug-killer")
+  ;
+
+Logger.config.displayDate = false;
+
+// Check if it's a git repo
+if (!Fs.existsSync(".git/")) {
+    return Logger.log("This is not a git project.", "error");
+}
+
+// Get commits
+var myRepo = new Repo(".");
+myRepo.exec("config user.email", function (err, GIT_EMAIL) {
+    debugger
+    if (err) { return Logger.log(err, "error"); }
+    myRepo.exec("config --get remote.origin.url", function (err, REMOTE_URL) {
+        if (!REMOTE_URL) {
+            return Logger.log("Cannot find the remote origin url. Please add it.", "error");
+        }
+
+        myRepo.exec("log --author='" + GIT_EMAIL + "'", function (err, log) {
+            if (err) { return Logger.log(err, "error"); }
+            console.log(log);
+        });
+    });
+});
+
