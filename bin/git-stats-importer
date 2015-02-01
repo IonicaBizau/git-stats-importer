@@ -35,9 +35,9 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
                     delete stats[c][REMOTE_URL];
                 });
 
-                Fs.save(stats, function (err) {
+                GitStats.save(stats, function (err) {
                     if (err) { return Logger.log(err, "error"); }
-                    Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warning");
+                    Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
                 });
             });
             return;
