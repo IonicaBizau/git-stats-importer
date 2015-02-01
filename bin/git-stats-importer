@@ -28,12 +28,24 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
             return Logger.log("Cannot find the remote origin url. Please add it.", "error");
         }
 
+        if (process.argv[2] === "--delete") {
+            GitStats.get(function (err, stats) {
+                if (err) { return Logger.log(err, "error"); }
+                Object.keys(stats).forEach(function (c) {
+                    delete stats[c][REMOTE_URL];
+                });
 
-        var count = 0
-          ;
+                Fs.save(stats, function (err) {
+                    if (err) { return Logger.log(err, "error"); }
+                    Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warning");
+                });
+            });
+            return;
+        }
+
+        var count = 0;
 
         function getLogSeq(c, callback) {
-            console.log(">> " + c);
             var command = OArgv({
                 author: GIT_EMAIL
               , "max-count": "100"
