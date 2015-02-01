@@ -7,6 +7,7 @@ var GitStats = require("git-stats")
   , Fs = require("fs")
   , Logger = require("bug-killer")
   , Async = require("async")
+  , OArgv = require("oargv")
   ;
 
 // Configure logger
@@ -27,28 +28,57 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
             return Logger.log("Cannot find the remote origin url. Please add it.", "error");
         }
 
-        myRepo.exec("log --author='" + GIT_EMAIL + "'", function (err, log) {
-            if (err) { return Logger.log(err, "error"); }
-            var series = [];
-            (log = log.split("\n")).forEach(function (c, i) {
-                if (!/^commit\ /.test(c)) { return; }
-                var commitHash = c.match(/^commit (.*)/)[1].trim()
-                  , date = log[i + 2].match(/^Date: (.*)/)[1].trim()
-                  ;
 
-                series.push(function (callback) {
+        var count = 0
+          ;
+
+        function getLogSeq(c, callback) {
+            console.log(">> " + c);
+            var command = OArgv({
+                author: GIT_EMAIL
+              , "max-count": "100"
+              , skip: c.toString()
+            }, "log");
+            myRepo.exec(command, function (err, data) {
+                if (err) { return Logger.log(err, "error"); }
+                if (!data) { return callback(null); }
+                data = data.split("\n");
+
+                function doSeq(i) {
+                    var cLine = data[i];
+                    if (cLine == undefined) {
+                        return getLogSeq(c + 100, callback);
+                    }
+
+                    if (!/^commit\ /.test(cLine)) { return doSeq(i + 1); }
+                    function getDate(x) {
+                        var date = (data[x].match(/^Date: (.*)/) || [])[1];
+                        if (date) { return date.trim(); }
+                        return getDate(x + 1);
+                    }
+
+                    var commitHash = cLine.match(/^commit (.*)/)[1].trim()
+                      , date = getDate(i)
+                      ;
+
                     GitStats.record({
                         date: date
                       , url: REMOTE_URL
                       , hash: commitHash
-                    }, callback);
-                });
-            });
+                    }, function (err) {
+                        if (err) { return Logger.log(err, "error"); }
+                        Logger.log((++count) + " Imported commit: " + commitHash, "info");
+                        doSeq(i + 1);
+                    });
+                }
 
-            Async.series(series, function (err) {
-                if (err) { return Logger.log(err, "error"); }
-                Logger.log("Imported " + series.length + " commits.", "info");
+                doSeq(0);
             });
+        }
+
+        getLogSeq(0, function (err) {
+            if (err) { return Logger.log(err, "error"); }
+            Logger.log("Done.", "info");
         });
     });
 });
