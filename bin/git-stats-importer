@@ -50,6 +50,7 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
                 author: GIT_EMAIL
               , "max-count": "100"
               , skip: c.toString()
+              , all: true
             }, "log");
             myRepo.exec(command, function (err, data) {
                 if (err) { return Logger.log(err, "error"); }
