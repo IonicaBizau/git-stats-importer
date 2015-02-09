@@ -95,4 +95,3 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
         });
     });
 });
-
