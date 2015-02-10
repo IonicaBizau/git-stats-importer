@@ -20,7 +20,8 @@ if (!Fs.existsSync(".git/")) {
 }
 
 // Get commits
-var myRepo = new Repo(".");
+var myRepo = new Repo(".")
+  , allUsers = false;
 myRepo.exec("config user.email", function (err, GIT_EMAIL) {
     if (err) { return Logger.log(err, "error"); }
     myRepo.exec("config --get remote.origin.url", function (err, REMOTE_URL) {
@@ -41,18 +42,28 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
                 });
             });
             return;
+        } else if (process.argv[2] === "--all") {
+            allUsers = true;
         }
 
         var count = 0;
 
         function getLogSeq(c, callback) {
-            var command = OArgv({
-                author: GIT_EMAIL
-              , "max-count": "100"
+            var arguments
+              , command;
+
+            arguments = {
+                "max-count": "100"
               , skip: c.toString()
               , all: true
               , "no-color": true
-            }, "log");
+            };
+
+            if (!allUsers) {
+              arguments.author = GIT_EMAIL;
+            }
+
+            command = OArgv(arguments, "log");
             myRepo.exec(command, function (err, data) {
                 if (err) { return Logger.log(err, "error"); }
                 if (!data) { return callback(null); }

@@ -20,6 +20,12 @@ Run the importer tool there:
 $ git-stats-importer
 ```
 
+To import the commits from all the users run:
+
+```sh
+$ git-stats-importer --all
+```
+
 ### Delete commits
 ```sh
 $ git-stats-importer --delete
