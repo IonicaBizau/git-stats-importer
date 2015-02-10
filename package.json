@@ -26,6 +26,10 @@
     "importer"
   ],
   "author": "Ionică Bizău <bizauionica@gmail.com>",
+  "contributors": [{
+    "name": "John Clarke",
+    "email": "clarke.johnna+github@gmail.com"
+  }],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/IonicaBizau/git-stats-importer/issues"
