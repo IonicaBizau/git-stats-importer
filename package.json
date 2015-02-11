@@ -9,7 +9,6 @@
   "dependencies": {
     "bug-killer": "^1.0.0",
     "async": "^0.9.0",
-    "exec-sync": "^0.1.6",
     "gry": "^1.0.0",
     "git-stats": "^1.0.0",
     "oargv": "^1.1.1"

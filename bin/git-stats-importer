@@ -2,7 +2,6 @@
 
 // Dependencies
 var GitStats = require("git-stats")
-  , ExecSync = require("exec-sync")
   , Repo = require("gry")
   , Fs = require("fs")
   , Logger = require("bug-killer")
