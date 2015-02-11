@@ -20,6 +20,8 @@ Run the importer tool there:
 $ git-stats-importer
 ```
 
+It is supposed that `git config user.email` returns a valid value. If it doesn't, please configure git correctly.
+
 ### Delete commits
 ```sh
 $ git-stats-importer --delete
