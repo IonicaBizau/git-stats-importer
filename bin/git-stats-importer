@@ -52,7 +52,7 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
               , all: true
               , "no-color": true
             }, "log");
-            myRepo.exec(command, function (err, data) {
+            myRepo.exec(command + " --pretty=medium --date=default", function (err, data) {
                 if (err) { return Logger.log(err, "error"); }
                 if (!data) { return callback(null); }
                 data = data.split("\n");
