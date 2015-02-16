@@ -20,9 +20,9 @@ if (!Fs.existsSync(".git/")) {
 
 // Get commits
 var myRepo = new Repo(".");
-myRepo.exec("config user.email", function (err, GIT_EMAIL) {
+myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
     if (err) { return Logger.log(err, "error"); }
-    myRepo.exec("config --get remote.origin.url", function (err, REMOTE_URL) {
+    myRepo.exec(OArgv({ get: "remote.origin.url" }, "config"), function (err, REMOTE_URL) {
         if (!REMOTE_URL) {
             return Logger.log("Cannot find the remote origin url. Please add it.", "error");
         }
@@ -45,14 +45,19 @@ myRepo.exec("config user.email", function (err, GIT_EMAIL) {
         var count = 0;
 
         function getLogSeq(c, callback) {
+
             var command = OArgv({
                 author: GIT_EMAIL
-              , "max-count": "100"
-              , skip: c.toString()
               , all: true
+              , skip: c.toString()
+              , pretty: "medium"
+              , date: "default"
+              , "max-count": "100"
               , "no-color": true
+              , __: "="
             }, "log");
-            myRepo.exec(command + " --pretty=medium --date=default", function (err, data) {
+
+            myRepo.exec(command, function (err, data) {
                 if (err) { return Logger.log(err, "error"); }
                 if (!data) { return callback(null); }
                 data = data.split("\n");

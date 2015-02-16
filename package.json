@@ -11,7 +11,7 @@
     "async": "^0.9.0",
     "gry": "^1.0.0",
     "git-stats": "^1.0.0",
-    "oargv": "^1.1.1"
+    "oargv": "^1.2.0"
   },
   "devDependencies": {},
   "scripts": {
