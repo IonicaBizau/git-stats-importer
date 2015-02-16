@@ -21,7 +21,8 @@ if (!Fs.existsSync(".git/")) {
 // Get commits
 var myRepo = new Repo(".");
 myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
-    if (err) { return Logger.log(err, "error"); }
+    GIT_EMAIL = GIT_EMAIL || process.env.GIT_AUTHOR_EMAIL;
+    if (err && !GIT_EMAIL) { return Logger.log("Cannot find the git email. " + err.message, "error"); }
     myRepo.exec(OArgv({ get: "remote.origin.url" }, "config"), function (err, REMOTE_URL) {
         if (!REMOTE_URL) {
             return Logger.log("Cannot find the remote origin url. Please add it.", "error");
