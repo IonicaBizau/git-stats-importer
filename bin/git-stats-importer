@@ -55,6 +55,7 @@ myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
               , date: "default"
               , "max-count": "100"
               , "no-color": true
+              , "use-mailmap": true
               , __: "="
             }, "log");
 
