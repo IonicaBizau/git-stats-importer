@@ -28,7 +28,8 @@
   ],
   "author": "Ionică Bizău <bizauionica@gmail.com>",
   "contributors": [
-    "John Clarke <clarke.johnna+github@gmail.com>"
+    "John Clarke <clarke.johnna+github@gmail.com>",
+    "Gnab <as0n@gnab.fr>"
   ],
   "license": "MIT",
   "bugs": {
