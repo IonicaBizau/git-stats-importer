@@ -16,14 +16,16 @@ Logger.config.displayDate = false;
 Logger.config.logLevel = 4;
 
 // Check if it's a git repo
-var repoDir = Path.resolve('.')
-  , prevDir;
-while (!Fs.existsSync(Path.resolve(repoDir, '.git/'))) {
-  prevDir = repoDir;
-  repoDir = Path.resolve(repoDir, '..');
-  if (prevDir == repoDir) {
-    return Logger.log("This is not a git project.", "error");
-  }
+var repoDir = Path.resolve(".")
+  , prevDir
+  ;
+
+while (!Fs.existsSync(Path.resolve(repoDir, ".git/"))) {
+    prevDir = repoDir;
+    repoDir = Path.resolve(repoDir, "..");
+    if (prevDir == repoDir) {
+        return Logger.log("This is not a git project.", "error");
+    }
 }
 
 // Get commits
