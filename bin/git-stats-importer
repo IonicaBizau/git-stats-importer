@@ -7,19 +7,29 @@ var GitStats = require("git-stats")
   , Logger = require("bug-killer")
   , Async = require("async")
   , OArgv = require("oargv")
+  , Path = require("path")
   ;
+
 
 // Configure logger
 Logger.config.displayDate = false;
 Logger.config.logLevel = 4;
 
 // Check if it's a git repo
-if (!Fs.existsSync(".git/")) {
-    return Logger.log("This is not a git project.", "error");
+var repoDir = Path.resolve(".")
+  , prevDir
+  ;
+
+while (!Fs.existsSync(Path.resolve(repoDir, ".git/"))) {
+    prevDir = repoDir;
+    repoDir = Path.resolve(repoDir, "..");
+    if (prevDir == repoDir) {
+        return Logger.log("This is not a git project.", "error");
+    }
 }
 
 // Get commits
-var myRepo = new Repo(".");
+var myRepo = new Repo(repoDir);
 myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
     GIT_EMAIL = GIT_EMAIL || process.env.GIT_AUTHOR_EMAIL;
     if (err && !GIT_EMAIL) { return Logger.log("Cannot find the git email. " + err.message, "error"); }
