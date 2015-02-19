@@ -33,82 +33,93 @@ var myRepo = new Repo(repoDir);
 myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
     GIT_EMAIL = GIT_EMAIL || process.env.GIT_AUTHOR_EMAIL;
     if (err && !GIT_EMAIL) { return Logger.log("Cannot find the git email. " + err.message, "error"); }
-    myRepo.exec(OArgv({ get: "remote.$(git remote | head -n1).url" }, "config"), function (err, REMOTE_URL) {
-        if (!REMOTE_URL) {
-            return Logger.log("Cannot find the remote origin url. Please add it.", "error");
+    myRepo.exec(OArgv({ }, "remote"), function (err, REMOTE_LIST) {
+        if (!REMOTE_LIST) {
+            return Logger.log("Cannot find the remote. Please add it.", "error");
         }
 
-        if (process.argv[2] === "--delete") {
-            GitStats.get(function (err, stats) {
-                if (err) { return Logger.log(err, "error"); }
-                Object.keys(stats).forEach(function (c) {
-                    delete stats[c][REMOTE_URL];
-                });
+        var REMOTE = REMOTE_LIST.split('\n')[0];
+        if (!REMOTE) {
+            return Logger.log("Cannot find the remote. Please add it.", "error");
+        }
 
-                GitStats.save(stats, function (err) {
+        myRepo.exec(OArgv({ get: "remote." + REMOTE + ".url" }, "config"), function (err, REMOTE_URL) {
+            if (!REMOTE_URL) {
+                return Logger.log("Cannot find the url.", "error");
+            }
+
+            if (process.argv[2] === "--delete") {
+                GitStats.get(function (err, stats) {
                     if (err) { return Logger.log(err, "error"); }
-                    Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
-                });
-            });
-            return;
-        }
-
-        var count = 0;
-
-        function getLogSeq(c, callback) {
-
-            var command = OArgv({
-                author: GIT_EMAIL
-              , all: true
-              , skip: c.toString()
-              , pretty: "medium"
-              , date: "default"
-              , "max-count": "100"
-              , "no-color": true
-              , "use-mailmap": true
-              , __: "="
-            }, "log");
-
-            myRepo.exec(command, function (err, data) {
-                if (err) { return Logger.log(err, "error"); }
-                if (!data) { return callback(null); }
-                data = data.split("\n");
-
-                function doSeq(i) {
-                    var cLine = data[i];
-                    if (cLine == undefined) {
-                        return getLogSeq(c + 100, callback);
-                    }
-
-                    if (!/^commit\ /.test(cLine)) { return doSeq(i + 1); }
-                    function getDate(x) {
-                        var date = (data[x].match(/^Date: (.*)/) || [])[1];
-                        if (date) { return date.trim(); }
-                        return getDate(x + 1);
-                    }
-
-                    var commitHash = cLine.match(/^commit (.*)/)[1].trim()
-                      , date = getDate(i)
-                      ;
-
-                    GitStats.record({
-                        date: date
-                      , url: REMOTE_URL
-                      , hash: commitHash
-                    }, function (err) {
-                        if (err) { return Logger.log(err, "error"); }
-                        Logger.log((++count) + " Imported commit: " + commitHash, "info");
-                        doSeq(i + 1);
+                    Object.keys(stats).forEach(function (c) {
+                        delete stats[c][REMOTE_URL];
                     });
-                }
 
-                doSeq(0);
+                    GitStats.save(stats, function (err) {
+                        if (err) { return Logger.log(err, "error"); }
+                        Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
+                    });
+                });
+                return;
+            }
+
+            var count = 0;
+
+            function getLogSeq(c, callback) {
+
+                var command = OArgv({
+                    author: GIT_EMAIL
+                  , all: true
+                  , skip: c.toString()
+                  , pretty: "medium"
+                  , date: "default"
+                  , "max-count": "100"
+                  , "no-color": true
+                  , "use-mailmap": true
+                  , __: "="
+                }, "log");
+
+                myRepo.exec(command, function (err, data) {
+                    if (err) { return Logger.log(err, "error"); }
+                    if (!data) { return callback(null); }
+                    data = data.split("\n");
+
+                    function doSeq(i) {
+                        var cLine = data[i];
+                        if (cLine == undefined) {
+                            return getLogSeq(c + 100, callback);
+                        }
+
+                        if (!/^commit\ /.test(cLine)) { return doSeq(i + 1); }
+                        function getDate(x) {
+                            var date = (data[x].match(/^Date: (.*)/) || [])[1];
+                            if (date) { return date.trim(); }
+                            return getDate(x + 1);
+                        }
+
+                        var commitHash = cLine.match(/^commit (.*)/)[1].trim()
+                          , date = getDate(i)
+                          ;
+
+                        GitStats.record({
+                            date: date
+                          , url: REMOTE_URL
+                          , hash: commitHash
+                        }, function (err) {
+                            if (err) { return Logger.log(err, "error"); }
+                            Logger.log((++count) + " Imported commit: " + commitHash, "info");
+                            doSeq(i + 1);
+                        });
+                    }
+
+                    doSeq(0);
+                });
+            }
+
+            getLogSeq(0, function (err) {
+                if (err) { return Logger.log(err, "error"); }
+                Logger.log("Done.", "info");
             });
-        }
-
-        getLogSeq(0, function (err) {
-            if (err) { return Logger.log(err, "error"); }
-            Logger.log("Done.", "info");
         });
     });
 });
