@@ -76,6 +76,8 @@ myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
                   , "max-count": "100"
                   , "no-color": true
                   , "use-mailmap": true
+                  // Pulling in the files changed
+                  , "name-status": true
                   , __: "="
                 }, "log");
 
@@ -101,10 +103,34 @@ myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
                           , date = getDate(i)
                           ;
 
+                          // Regex to parse the file types
+                          var fileRegex = /[^\\]*\.(\w+)$/;
+
+                          // If we have a file changed in this commit
+                          if (fileRegex.test(data[i + 6])) {
+                            var languages = {};
+                            var file_start = i + 6;
+                            // Step through each file changed. The loop ends when the regex
+                            for (file_count = 0; fileRegex.test(data[file_start + file_count]); file_count++) {
+                              // Grab the file type
+                              var file_type = data[file_start + file_count].match(fileRegex)[1];
+                              // If this file type is already defined, add 1 to it.
+                              if (languages[file_type]) {
+                                languages[file_type]++;
+                              }
+                              // New file type for this commit. Append it to our languages
+                              // Example: "php", "js", "css"
+                              else {
+                                languages[file_type] = 1;
+                              }
+                            }
+                          }
+
                         GitStats.record({
                             date: date
                           , url: REMOTE_URL
                           , hash: commitHash
+                          , languages: languages
                         }, function (err) {
                             if (err) { return Logger.log(err, "error"); }
                             Logger.log((++count) + " Imported commit: " + commitHash, "info");
