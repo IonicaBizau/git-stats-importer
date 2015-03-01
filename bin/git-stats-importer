@@ -109,8 +109,10 @@ myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
                           // If we have a file changed in this commit
                           if (fileRegex.test(data[i + 6])) {
                             var languages = {};
+                            // First line of the file changes.
                             var file_start = i + 6;
-                            // Step through each file changed. The loop ends when the regex
+                            // Step through each file changed. The loop ends when the regex test returns false.
+                            // Or rather, when we get to the end of the file changes for this particular commit
                             for (file_count = 0; fileRegex.test(data[file_start + file_count]); file_count++) {
                               // Grab the file type
                               var file_type = data[file_start + file_count].match(fileRegex)[1];
