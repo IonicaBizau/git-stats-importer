@@ -8,6 +8,7 @@ var GitStats = require("git-stats")
   , Async = require("async")
   , OArgv = require("oargv")
   , Path = require("path")
+  , IsThere = require("is-there")
   ;
 
 
@@ -20,7 +21,7 @@ var repoDir = Path.resolve(".")
   , prevDir
   ;
 
-while (!Fs.existsSync(Path.resolve(repoDir, ".git/"))) {
+while (!IsThere.sync(Path.resolve(repoDir, ".git/"))) {
     prevDir = repoDir;
     repoDir = Path.resolve(repoDir, "..");
     if (prevDir == repoDir) {
