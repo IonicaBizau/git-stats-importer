@@ -20,6 +20,15 @@ Run the importer tool there:
 $ git-stats-importer
 ```
 
+### Import only selected commits
+
+You can use this bash variant of import to import only commits from specific author,
+time, grep or whatever you can formulate as git log parameters.
+
+```sh
+$ git-stats-importer-custom --help
+```
+
 It is supposed that `git config user.email` returns a valid value. If it doesn't, please configure git correctly.
 
 ### Delete commits
