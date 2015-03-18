@@ -4,7 +4,8 @@
   "description": "Imports your commits from a repository into git-stats history.",
   "main": "bin/git-stats-importer",
   "bin": {
-    "git-stats-importer": "./bin/git-stats-importer"
+    "git-stats-importer": "./bin/git-stats-importer",
+    "git-stats-importer-custom": "./bin/git-stats-importer-custom"
   },
   "dependencies": {
     "bug-killer": "^1.0.0",
