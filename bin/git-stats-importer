@@ -11,10 +11,6 @@ var GitStats = require("git-stats")
   , IsThere = require("is-there")
   ;
 
-// Configure logger
-Logger.config.displayDate = false;
-Logger.config.logLevel = 4;
-
 // Check if it's a git repo
 var repoDir = Path.resolve(".")
   , prevDir
