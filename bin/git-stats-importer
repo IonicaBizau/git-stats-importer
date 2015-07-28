@@ -56,10 +56,34 @@ myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
                         Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
                     });
                 });
-                return;
+            }
+            return;
+        } else if (process.argv[2] === "--all") {
+            allUsers = true;
+        }
+
+        var count = 0;
+
+        function getLogSeq(c, callback) {
+            var arguments
+              , command;
+
+            arguments = {
+                "max-count": "100"
+              , skip: c.toString()
+              , all: true
+              , "no-color": true
+            };
+
+            if (!allUsers) {
+              arguments.author = GIT_EMAIL;
             }
 
-            var count = 0;
+            command = OArgv(arguments, "log");
+            myRepo.exec(command, function (err, data) {
+                if (err) { return Logger.log(err, "error"); }
+                if (!data) { return callback(null); }
+                data = data.split("\n");
 
             function getLogSeq(c, callback) {
 
