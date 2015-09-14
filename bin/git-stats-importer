@@ -9,7 +9,7 @@ var Clp = require("clp")
   ;
 
 // Configuration
-Logger.config.error = {
+Logger.config.import = {
     color: [46, 204, 113]
   , text: "import"
   , level: 3
@@ -31,7 +31,7 @@ var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provid
           , "git-stats-importer --delete --find-repos ~/github # deletes the commits from the ~/github dir"
         ]
       , docs_url: Package.homepage
-    }, [findReposOpt, deleteOpt])
+    }, [findReposOpt, deleteOpt, emailOpt])
   ;
 
 if (!emailOpt.value) {
@@ -61,7 +61,7 @@ importer.on("gitFolder", function (dir) {
 
 // Listen for import
 importer.on("import", function (data) {
-    Logger.log([data.path, data.commit_hash].join(":"), "import");
+    Logger.log([data.path, data.commit.hash].join(":"), "import");
 });
 
 // Listen for import
