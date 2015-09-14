@@ -8,12 +8,12 @@
     "git-stats-importer-custom": "./bin/git-stats-importer-custom"
   },
   "dependencies": {
-    "bug-killer": "^1.0.0",
-    "async": "^0.9.0",
-    "gry": "^1.0.0",
+    "async": "^1.4.2",
+    "bug-killer": "^4.0.0",
     "git-stats": "^1.2.0",
-    "oargv": "^1.2.0",
-    "is-there": "^1.1.0"
+    "gry": "^4.0.0",
+    "is-there": "^4.0.0",
+    "oargv": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {
