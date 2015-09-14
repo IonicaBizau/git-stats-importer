@@ -1,145 +1,154 @@
 #!/usr/bin/env node
 
 // Dependencies
-var GitStats = require("git-stats")
-  , Repo = require("gry")
-  , Fs = require("fs")
-  , Logger = require("bug-killer")
-  , Async = require("async")
-  , OArgv = require("oargv")
-  , Path = require("path")
-  , IsThere = require("is-there")
+var Clp = require("clp")
+  , Package = require("../package")
+  , GitStats = require("git-stats")
+  , GitStatsImporter = require("../")
   ;
 
-// Check if it's a git repo
-var repoDir = Path.resolve(".")
-  , prevDir
+// Create options and add them
+var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provided, the importer will search for repositories in the provided path (recursively).", "path")
+  , deleteOpt = new Clp.Option(["d", "delete"], "Delete the commits from selected repositories.")
+  , parser = new Clp({
+        name: "Git Stats Importer"
+      , version: Package.version
+      , process: true
+      , exe: Package.name
+      , examples: [
+            "git-stats-importer # imports the commits from the current repository"
+          , "git-stats-importer --delete # deletes the commits from the current repo"
+          , "git-stats-importer --find-repos ~/github # searches for repositories in the ~/github dir"
+          , "git-stats-importer --delete --find-repos ~/github # deletes the commits from the ~/github dir"
+        ]
+      , docs_url: Package.homepage
+    }, [findReposOpt, deleteOpt])
   ;
 
-while (!IsThere.sync(Path.resolve(repoDir, ".git/"))) {
-    prevDir = repoDir;
-    repoDir = Path.resolve(repoDir, "..");
-    if (prevDir == repoDir) {
-        return Logger.log("This is not a git project.", "error");
-    }
-}
+var importer = GitStatsImporter({
+
+});
+
+importer.on("import", function () {
+
+});
 
 // Get commits
-var myRepo = new Repo(repoDir);
-myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
-    GIT_EMAIL = GIT_EMAIL || process.env.GIT_AUTHOR_EMAIL;
-    if (err && !GIT_EMAIL) { return Logger.log("Cannot find the git email. " + err.message, "error"); }
-    myRepo.exec(OArgv({ }, "remote"), function (err, REMOTE_LIST) {
-        if (!REMOTE_LIST) {
-            return Logger.log("Cannot find the remote. Please add it.", "error");
-        }
-
-        var REMOTE = REMOTE_LIST.split('\n')[0];
-        if (!REMOTE) {
-            return Logger.log("Cannot find the remote. Please add it.", "error");
-        }
-
-        myRepo.exec(OArgv({ get: "remote." + REMOTE + ".url" }, "config"), function (err, REMOTE_URL) {
-            if (!REMOTE_URL) {
-                return Logger.log("Cannot find the url.", "error");
-            }
-
-            if (process.argv[2] === "--delete") {
-                GitStats.get(function (err, stats) {
-                    if (err) { return Logger.log(err, "error"); }
-                    Object.keys(stats).forEach(function (c) {
-                        delete stats[c][REMOTE_URL];
-                    });
-
-                    GitStats.save(stats, function (err) {
-                        if (err) { return Logger.log(err, "error"); }
-                        Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
-                    });
-                });
-            }
-            return;
-        } else if (process.argv[2] === "--all") {
-            allUsers = true;
-        }
-
-        var count = 0;
-
-        function getLogSeq(c, callback) {
-            var arguments
-              , command;
-
-            arguments = {
-                "max-count": "100"
-              , skip: c.toString()
-              , all: true
-              , "no-color": true
-            };
-
-            if (!allUsers) {
-              arguments.author = GIT_EMAIL;
-            }
-
-            command = OArgv(arguments, "log");
-            myRepo.exec(command, function (err, data) {
-                if (err) { return Logger.log(err, "error"); }
-                if (!data) { return callback(null); }
-                data = data.split("\n");
-
-            function getLogSeq(c, callback) {
-
-                var command = OArgv({
-                    author: GIT_EMAIL
-                  , all: true
-                  , skip: c.toString()
-                  , pretty: "medium"
-                  , date: "default"
-                  , "max-count": "100"
-                  , "no-color": true
-                  , "use-mailmap": true
-                  , __: "="
-                }, "log");
-
-                myRepo.exec(command, function (err, data) {
-                    if (err) { return Logger.log(err, "error"); }
-                    if (!data) { return callback(null); }
-                    data = data.split("\n");
-
-                    function doSeq(i) {
-                        var cLine = data[i];
-                        if (cLine == undefined) {
-                            return getLogSeq(c + 100, callback);
-                        }
-
-                        if (!/^commit\ /.test(cLine)) { return doSeq(i + 1); }
-                        function getDate(x) {
-                            var date = (data[x].match(/^Date: (.*)/) || [])[1];
-                            if (date) { return date.trim(); }
-                            return getDate(x + 1);
-                        }
-
-                        var commitHash = cLine.match(/^commit (.*)/)[1].trim()
-                          , date = getDate(i)
-                          ;
-
-                        GitStats.record({
-                            date: date
-                          , url: REMOTE_URL
-                          , hash: commitHash
-                        }, function (err) {
-                            if (err) { return Logger.log(err, "error"); }
-                            Logger.log((++count) + " Imported commit: " + commitHash, "info");
-                            doSeq(i + 1);
-                        });
-                    }
-
-                    doSeq(0);
-                });
-            }
-
-            getLogSeq(0, function (err) {
-                if (err) { return Logger.log(err, "error"); }
-                Logger.log("Done.", "info");
-            });
-        });
-    });
-});
+//var myRepo = new Repo(repoDir);
+//myRepo.exec(OArgv({ _: "user.email" }, "config"), function (err, GIT_EMAIL) {
+//    GIT_EMAIL = GIT_EMAIL || process.env.GIT_AUTHOR_EMAIL;
+//    if (err && !GIT_EMAIL) { return Logger.log("Cannot find the git email. " + err.message, "error"); }
+//    myRepo.exec(OArgv({ }, "remote"), function (err, REMOTE_LIST) {
+//        if (!REMOTE_LIST) {
+//            return Logger.log("Cannot find the remote. Please add it.", "error");
+//        }
+//
+//        var REMOTE = REMOTE_LIST.split('\n')[0];
+//        if (!REMOTE) {
+//            return Logger.log("Cannot find the remote. Please add it.", "error");
+//        }
+//
+//        myRepo.exec(OArgv({ get: "remote." + REMOTE + ".url" }, "config"), function (err, REMOTE_URL) {
+//            if (!REMOTE_URL) {
+//                return Logger.log("Cannot find the url.", "error");
+//            }
+//
+//            if (process.argv[2] === "--delete") {
+//                GitStats.get(function (err, stats) {
+//                    if (err) { return Logger.log(err, "error"); }
+//                    Object.keys(stats).forEach(function (c) {
+//                        delete stats[c][REMOTE_URL];
+//                    });
+//
+//                    GitStats.save(stats, function (err) {
+//                        if (err) { return Logger.log(err, "error"); }
+//                        Logger.log("Deleted this repository from your git stats history. You can import it any time running git-stats-importer.", "warn");
+//                    });
+//                });
+//            }
+//            return;
+//        } else if (process.argv[2] === "--all") {
+//            allUsers = true;
+//        }
+//
+//        var count = 0;
+//
+//        function getLogSeq(c, callback) {
+//            var arguments
+//              , command;
+//
+//            arguments = {
+//                "max-count": "100"
+//              , skip: c.toString()
+//              , all: true
+//              , "no-color": true
+//            };
+//
+//            if (!allUsers) {
+//              arguments.author = GIT_EMAIL;
+//            }
+//
+//            command = OArgv(arguments, "log");
+//            myRepo.exec(command, function (err, data) {
+//                if (err) { return Logger.log(err, "error"); }
+//                if (!data) { return callback(null); }
+//                data = data.split("\n");
+//
+//            function getLogSeq(c, callback) {
+//
+//                var command = OArgv({
+//                    author: GIT_EMAIL
+//                  , all: true
+//                  , skip: c.toString()
+//                  , pretty: "medium"
+//                  , date: "default"
+//                  , "max-count": "100"
+//                  , "no-color": true
+//                  , "use-mailmap": true
+//                  , __: "="
+//                }, "log");
+//
+//                myRepo.exec(command, function (err, data) {
+//                    if (err) { return Logger.log(err, "error"); }
+//                    if (!data) { return callback(null); }
+//                    data = data.split("\n");
+//
+//                    function doSeq(i) {
+//                        var cLine = data[i];
+//                        if (cLine == undefined) {
+//                            return getLogSeq(c + 100, callback);
+//                        }
+//
+//                        if (!/^commit\ /.test(cLine)) { return doSeq(i + 1); }
+//                        function getDate(x) {
+//                            var date = (data[x].match(/^Date: (.*)/) || [])[1];
+//                            if (date) { return date.trim(); }
+//                            return getDate(x + 1);
+//                        }
+//
+//                        var commitHash = cLine.match(/^commit (.*)/)[1].trim()
+//                          , date = getDate(i)
+//                          ;
+//
+//                        GitStats.record({
+//                            date: date
+//                          , url: REMOTE_URL
+//                          , hash: commitHash
+//                        }, function (err) {
+//                            if (err) { return Logger.log(err, "error"); }
+//                            Logger.log((++count) + " Imported commit: " + commitHash, "info");
+//                            doSeq(i + 1);
+//                        });
+//                    }
+//
+//                    doSeq(0);
+//                });
+//            }
+//
+//            getLogSeq(0, function (err) {
+//                if (err) { return Logger.log(err, "error"); }
+//                Logger.log("Done.", "info");
+//            });
+//        });
+//    });
+//});
