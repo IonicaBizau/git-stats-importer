@@ -8,12 +8,11 @@ var Clp = require("clp")
   , Logger = require("bug-killer")
   ;
 
-BugKiller.config = {
-    error: {
-        color: [46, 204, 113]
-      , text: "import"
-      , level: 3
-    }
+// Configuration
+Logger.config.error = {
+    color: [46, 204, 113]
+  , text: "import"
+  , level: 3
 };
 
 // Create options and add them
