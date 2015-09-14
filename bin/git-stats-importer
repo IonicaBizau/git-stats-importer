@@ -5,10 +5,19 @@ var Clp = require("clp")
   , Package = require("../package")
   , GitStats = require("git-stats")
   , GitStatsImporter = require("../")
+  , Logger = require("bug-killer")
   ;
 
+BugKiller.config = {
+    error: {
+        color: [46, 204, 113]
+      , text: "import"
+      , level: 3
+    }
+};
+
 // Create options and add them
-var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provided, the importer will search for repositories in the provided path (recursively).", "path")
+var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provided, the importer will search for repositories in the provided path (recursively).", "path", process.cwd())
   , deleteOpt = new Clp.Option(["d", "delete"], "Delete the commits from selected repositories.")
   , parser = new Clp({
         name: "Git Stats Importer"
@@ -25,12 +34,26 @@ var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provid
     }, [findReposOpt, deleteOpt])
   ;
 
+// Start importing
 var importer = GitStatsImporter({
-
+    delete: deleteOpt.is_provided
+  , path: findReposOpt.value
+  , recursive: findReposOpt.is_provided
 });
 
-importer.on("import", function () {
+// Listen for import
+importer.on("import", function (data) {
+    Logger.log([data.path, data.commit_hash].join(":"), "import");
+});
 
+// Listen for import
+importer.on("error", function (err, data) {
+    Logger.log(err, "error");
+});
+
+// Listen for finish
+importer.on("finish", function () {
+    Logger.log("Done.");
 });
 
 // Get commits
