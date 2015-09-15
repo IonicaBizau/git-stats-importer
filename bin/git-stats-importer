@@ -3,7 +3,6 @@
 // Dependencies
 var Clp = require("clp")
   , Package = require("../package")
-  , GitStats = require("git-stats")
   , GitStatsImporter = require("../")
   , Logger = require("bug-killer")
   ;
