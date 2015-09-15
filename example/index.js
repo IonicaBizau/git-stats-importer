@@ -35,6 +35,11 @@ importer.on("error", function (err, data) {
     /* do something when errors occur */
 });
 
+// Listen for delete
+importer.on("delete", function (data) {
+    /* do something on delete */
+});
+
 // Listen for finish
 importer.on("finish", function (data) {
     /* do something on finish */

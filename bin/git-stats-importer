@@ -14,6 +14,12 @@ Logger.config.import = {
   , level: 3
 };
 
+Logger.config.delete = {
+    color: [231, 76, 60]
+  , text: "delete"
+  , level: 3
+};
+
 // Create options and add them
 var findReposOpt = new Clp.Option(["f", "find-repos"], "If this option is provided, the importer will search for repositories in the provided path (recursively).", "path", process.cwd())
   , deleteOpt = new Clp.Option(["d", "delete"], "Delete the commits from selected repositories.")
@@ -61,6 +67,11 @@ importer.on("gitFolder", function (dir) {
 // Listen for import
 importer.on("import", function (data) {
     Logger.log([data.path, data.commit.hash].join(":"), "import");
+});
+
+// Listen for delete
+importer.on("delete", function (data) {
+    Logger.log([data.path, data.commit.hash].join(":"), "delete");
 });
 
 // Listen for import
