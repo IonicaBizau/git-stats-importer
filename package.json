@@ -1,6 +1,6 @@
 {
   "name": "git-stats-importer",
-  "version": "1.8.0",
+  "version": "2.0.0",
   "description": "Imports your commits from a repository into git-stats history.",
   "main": "lib/index.js",
   "bin": {
@@ -34,7 +34,7 @@
     "Linquize <linquize@yahoo.com.hk>",
     "Iulian Onofrei <iulianonofrei.com@gmail.com>"
   ],
-  "license": "MIT",
+  "license": "KINDLY",
   "bugs": {
     "url": "https://github.com/IonicaBizau/git-stats-importer/issues"
   },
