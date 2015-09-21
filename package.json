@@ -39,7 +39,7 @@
     "clp": "^3.0.0",
     "git-repos": "^1.0.0",
     "bug-killer": "^4.0.0",
-    "git-stats": "^2.0.0",
+    "git-stats": "ionicabizau/git-stats#docs",
     "gitlog-parser": "^0.0.4",
     "gry": "^4.0.0",
     "oargv": "^2.0.0",
