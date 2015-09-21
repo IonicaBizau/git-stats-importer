@@ -6,21 +6,13 @@
   "bin": {
     "git-stats-importer": "./bin/git-stats-importer"
   },
-  "dependencies": {
-    "async": "^1.4.2",
-    "bug-killer": "^4.0.0",
-    "git-stats": "^1.2.0",
-    "gry": "^4.0.0",
-    "is-there": "^4.0.0",
-    "oargv": "^2.0.0"
-  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IonicaBizau/git-stats-importer.git"
+    "url": "git+https://github.com/IonicaBizau/git-stats-importer.git"
   },
   "keywords": [
     "git",
@@ -38,5 +30,22 @@
   "bugs": {
     "url": "https://github.com/IonicaBizau/git-stats-importer/issues"
   },
-  "homepage": "https://github.com/IonicaBizau/git-stats-importer"
+  "homepage": "https://github.com/IonicaBizau/git-stats-importer",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "clp": "^3.0.0",
+    "git-repos": "^1.0.0",
+    "bug-killer": "^4.0.0",
+    "git-stats": "^2.0.0",
+    "gitlog-parser": "^0.0.4",
+    "gry": "^4.0.0",
+    "oargv": "^2.0.0",
+    "is-there": "^4.0.0",
+    "one-by-one": "^2.0.0",
+    "parent-search": "^1.1.0",
+    "typpy": "^2.1.0",
+    "ul": "^5.0.0"
+  }
 }
