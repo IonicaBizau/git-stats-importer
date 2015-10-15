@@ -80,6 +80,9 @@ importer.on("error", function (err, data) {
 });
 
 // Listen for finish
-importer.on("finish", function (data) {
+importer.on("finish", function (err, data) {
+    if (err) {
+        return Logger.log(err, "error");
+    }
     Logger.log("Done.");
 });
