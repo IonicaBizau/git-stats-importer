@@ -42,7 +42,7 @@
     "git-stats": "^2.0.0",
     "gitlog-parser": "^0.0.4",
     "gry": "^4.0.0",
-    "oargv": "^2.0.0",
+    "oargv": "^3.2.0",
     "is-there": "^4.0.0",
     "one-by-one": "^2.0.0",
     "parent-search": "^1.1.0",
