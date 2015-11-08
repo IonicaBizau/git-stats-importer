@@ -19,7 +19,7 @@
     "stats",
     "importer"
   ],
-  "author": "Ionică Bizău <bizauionica@gmail.com>",
+  "author": "Ionică Bizău <bizauionica@gmail.com> (http://ionicabizau.net)",
   "contributors": [
     "John Clarke <clarke.johnna+github@gmail.com>",
     "Gnab <as0n@gnab.fr>",
@@ -48,5 +48,8 @@
     "parent-search": "^1.1.0",
     "typpy": "^2.1.0",
     "ul": "^5.0.0"
+  },
+  "blah": {
+    "description": "This tool imports commits into the [`git-stats`](https://github.com/IonicaBizau/git-stats) commit history. If you like to import all your commits from BitBucket and GitHub, check out the [Repository Downloader project](https://github.com/IonicaBizau/repository-downloader)."
   }
 }
