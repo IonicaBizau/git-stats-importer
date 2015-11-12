@@ -1,4 +1,5 @@
 # `$ git-stats-importer` [![Support this project][donate-now]][paypal-donations]
+
 Imports your commits from a repository into git-stats history.
 
 This tool imports commits into the [`git-stats`](https://github.com/IonicaBizau/git-stats) commit history. If you like to import all your commits from BitBucket and GitHub, check out the [Repository Downloader project](https://github.com/IonicaBizau/repository-downloader).
