@@ -1,6 +1,6 @@
-# `$ git-stats-importer` [![Support this project][donate-now]][paypal-donations]
+# `$ git-stats-importer` [![PayPal](https://img.shields.io/badge/%24-paypal-f39c12.svg)][paypal-donations] [![Version](https://img.shields.io/npm/v/git-stats-importer.svg)](https://www.npmjs.com/package/git-stats-importer) [![Downloads](https://img.shields.io/npm/dt/git-stats-importer.svg)](https://www.npmjs.com/package/git-stats-importer) [![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/johnnyb?utm_source=github&utm_medium=button&utm_term=johnnyb&utm_campaign=github)
 
-Imports your commits from a repository into git-stats history.
+> Imports your commits from a repository into git-stats history.
 
 This tool imports commits into the [`git-stats`](https://github.com/IonicaBizau/git-stats) commit history. If you like to import all your commits from BitBucket and GitHub, check out the [Repository Downloader project](https://github.com/IonicaBizau/repository-downloader).
 
