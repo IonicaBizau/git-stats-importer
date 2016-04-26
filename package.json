@@ -1,6 +1,6 @@
 {
   "name": "git-stats-importer",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Imports your commits from a repository into git-stats history.",
   "main": "lib/index.js",
   "bin": {
@@ -51,5 +51,16 @@
   },
   "blah": {
     "description": "This tool imports commits into the [`git-stats`](https://github.com/IonicaBizau/git-stats) commit history. If you like to import all your commits from BitBucket and GitHub, check out the [Repository Downloader project](https://github.com/IonicaBizau/repository-downloader)."
-  }
+  },
+  "files": [
+    "bin/",
+    "app/",
+    "lib/",
+    "dist/",
+    "src/",
+    "resources/",
+    "menu/",
+    "cli.js",
+    "index.js"
+  ]
 }
