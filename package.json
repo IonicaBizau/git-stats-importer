@@ -1,6 +1,6 @@
 {
   "name": "git-stats-importer",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Imports your commits from a repository into git-stats history.",
   "main": "lib/index.js",
   "bin": {
@@ -60,6 +60,7 @@
     "src/",
     "resources/",
     "menu/",
+    "scripts/",
     "cli.js",
     "index.js"
   ]
