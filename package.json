@@ -1,6 +1,6 @@
 {
   "name": "git-stats-importer",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "description": "Imports your commits from a repository into git-stats history.",
   "main": "lib/index.js",
   "bin": {
@@ -19,7 +19,7 @@
     "stats",
     "importer"
   ],
-  "author": "Ionică Bizău <bizauionica@gmail.com> (http://ionicabizau.net)",
+  "author": "Ionică Bizău <bizauionica@gmail.com> (https://ionicabizau.net)",
   "contributors": [
     "John Clarke <clarke.johnna+github@gmail.com>",
     "Gnab <as0n@gnab.fr>",
@@ -56,12 +56,11 @@
     "bin/",
     "app/",
     "lib/",
-    "build/",
     "dist/",
     "src/",
+    "scripts/",
     "resources/",
     "menu/",
-    "scripts/",
     "cli.js",
     "index.js"
   ]
