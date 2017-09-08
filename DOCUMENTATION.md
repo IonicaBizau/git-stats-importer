@@ -6,6 +6,7 @@ You can see below the API reference of this module.
 Creates a new `Importer` instance.
 
 #### Params
+
 - **Object** `options`: The `GitStatsImporter` options.
 - **GitStats** `gs`: The `GitStats` instance.
 - **Object** `data`: The commit data.
@@ -32,6 +33,7 @@ Imports the selected commits.
 Creates a new instance of `GitStatsImporter`.
 
 #### Params
+
 - **Object** `options`: An object containing the following fields:
  - `path` (String): The repository path.
  - `delete` (Boolean): If `true`, it will delete the commits from the history.
