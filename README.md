@@ -169,6 +169,15 @@ importer.on("finish", function (data) {
 
 
 
+## :memo: Documentation
+
+For full API reference, see the [DOCUMENTATION.md][docs] file.
+
+
+
+
+
+
 
 ## :question: Get Help
 
@@ -181,14 +190,6 @@ There are few ways to get help:
  3. For direct and quick help, you can [use Codementor](https://www.codementor.io/johnnyb). :rocket:
 
 
-
-
-
-
-
-## :memo: Documentation
-
-For full API reference, see the [DOCUMENTATION.md][docs] file.
 
 
 
